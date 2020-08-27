@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\User;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\Auth\RegisterRequest;
 
 class RegisterController extends Controller
 {
@@ -13,8 +14,15 @@ class RegisterController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function __invoke(Request $request)
+    public function __invoke(RegisterRequest $request)
     {
-        return 'register';
+        User::create([
+            'name' => request('name'),
+            'username' => request('username'),
+            'email' => request('email'),
+            'password' => bcrypt(request('password')),
+        ]);
+
+        return response("Thanks, you are registered");
     }
 }
