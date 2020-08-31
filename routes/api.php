@@ -1,10 +1,7 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\RegisterController;
-
+use App\Http\Controllers\Article\ArticleController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -23,6 +20,6 @@ Route::namespace('Auth')->group(function(){
 
 Route::namespace('Article')->middleware('auth:api')->group(function(){
     Route::post('create-new-article', 'ArticleController@store');
+    Route::patch('update-article/{article}', 'ArticleController@update');
 });
-
 Route::get('user', 'UserController');

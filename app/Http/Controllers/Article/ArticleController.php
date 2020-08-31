@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Article;
 
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Models\Article\Article;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ArticleResource;
+use App\Http\Resources\ArticleCollection;
 
 class ArticleController extends Controller
 {
@@ -15,7 +18,8 @@ class ArticleController extends Controller
      */
     public function index()
     {
-        //
+        $articles = Article::paginate(2);
+        return new ArticleCollection($articles);
     }
 
     /**
@@ -32,12 +36,7 @@ class ArticleController extends Controller
             'subject' => ['required'],
         ]);
 
-        $articles = auth()->user()->articles()->create([
-            'title' => request('title'),
-            'slug' => Str::slug(request('title')),
-            'body' => request('body'),
-            'subject_id' => request('subject'),
-        ]);
+        $articles = auth()->user()->articles()->create($this->articleStore());
 
         return $articles;
     }
@@ -48,9 +47,13 @@ class ArticleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Article $article)
     {
-        //
+        // return response(['data' => [
+        //     'status' => 'success',
+        //     'article' => new ArticleResource($article),
+        // ]]);
+        return new ArticleResource($article);
     }
 
     /**
@@ -60,9 +63,11 @@ class ArticleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Article $article)
     {
-        //
+        $article->update($this->articleStore());
+
+        return new ArticleResource($article);
     }
 
     /**
@@ -74,5 +79,15 @@ class ArticleController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function articleStore()
+    {
+        return [
+            'title' => request('title'),
+            'slug' => Str::slug(request('title')),
+            'body' => request('body'),
+            'subject_id' => request('subject'),
+        ];
     }
 }
