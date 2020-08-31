@@ -21,5 +21,6 @@ Route::namespace('Auth')->group(function(){
 Route::namespace('Article')->middleware('auth:api')->group(function(){
     Route::post('create-new-article', 'ArticleController@store');
     Route::patch('update-article/{article}', 'ArticleController@update');
+    Route::delete('delete-article/{article}', 'ArticleController@destroy');
 });
 Route::get('user', 'UserController');

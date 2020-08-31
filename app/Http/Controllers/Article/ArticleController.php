@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Article;
 
 use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use App\Models\Article\Article;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ArticleRequest;
 use App\Http\Resources\ArticleResource;
 use App\Http\Resources\ArticleCollection;
 
@@ -28,14 +28,8 @@ class ArticleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ArticleRequest $request)
     {
-        $request->validate([
-            'title' => ['required', 'min:3', 'max:255'],
-            'body' => ['required'],
-            'subject' => ['required'],
-        ]);
-
         $articles = auth()->user()->articles()->create($this->articleStore());
 
         return $articles;
@@ -63,7 +57,7 @@ class ArticleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Article $article)
+    public function update(ArticleRequest $request, Article $article)
     {
         $article->update($this->articleStore());
 
@@ -76,9 +70,11 @@ class ArticleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Article $article)
     {
-        //
+        $article->delete();
+
+        return response()->json('Artikel Sudah Berhasil Dihapus', 200);
     }
 
     public function articleStore()
